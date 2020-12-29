@@ -23,7 +23,8 @@ type Exporter struct {
 }
 
 const (
-	metadataSpecID = 1
+	metadataSpecID  = 1
+	ss58AddressType = 18
 )
 
 func NewExporter(endpoint string, customTypesFilePath string) (*Exporter, error) {
@@ -138,7 +139,7 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 	} else {
 		for _, accountId := range validators {
 			hasPoints := false
-			address := ss58.Encode("0x"+accountId, 18)
+			address := ss58.Encode("0x"+accountId, ss58AddressType)
 			for _, individual := range points.Individuals {
 				if individual.AccountId == accountId {
 					hasPoints = true
