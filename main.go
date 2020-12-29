@@ -37,7 +37,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Printf("Darwinia Chain State Exporter %v-%v (built %v)\n", buildVersion, buildCommit, buildDate)
+	fmt.Printf("Chain State Exporter %v-%v (built %v)\n", buildVersion, buildCommit, buildDate)
 	logrus.SetLevel(logrus.Level(opts.LogLevel))
 
 	var err error
@@ -47,6 +47,19 @@ func main() {
 	}
 
 	http.HandleFunc(opts.MetricsPath, scrapeHandler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write([]byte(`<html>
+<head><title>Chain State Exporter</title></head>
+<body>
+<h1>Chain State Exporter ` + buildVersion + `</h1>
+<p><a href='` + opts.MetricsPath + `'>Metrics</a></p>
+</body>
+</html>
+`))
+		if err != nil {
+			logrus.Debugf("Write() err: %s", err)
+		}
+	})
 
 	logrus.Infof("Server is ready to handle incoming scrape requests.")
 	logrus.Fatal(http.ListenAndServe(opts.Listen, nil))
