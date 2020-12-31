@@ -11,11 +11,13 @@ import (
 )
 
 var opts struct {
-	LogLevel            uint32 `long:"log-level" description:"The log level (0 ~ 6), use 5 for debugging, see https://pkg.go.dev/github.com/sirupsen/logrus#Level" value-name:"N" default:"4"`
-	Listen              string `long:"listen" description:"Exporter listen address" value-name:"[ADDR]:PORT" default:":9602"`
-	WebsocketEndpoint   string `short:"e" long:"ws-endpoint" description:"Darwinia node websocket endpoint" value-name:"ws|wss://" default:"ws://127.0.0.1:9944"`
-	MetricsPath         string `long:"metrics-path" description:"Exposed metrics path" value-name:"PATH" default:"/metrics"`
-	CustomTypesFilePath string `long:"types-file" description:"Path to the custom types file" default:"types.json"`
+	CustomTypesFilePath string `long:"types-file" description:"Path to the custom types file" value-name:"PATH" default:"types.json"`
+	WebsocketEndpoint   string `short:"e" long:"ws-endpoint" description:"Darwinia node websocket endpoint where exporter collects chain state from" value-name:"ws|wss://" default:"ws://127.0.0.1:9944"`
+
+	Listen      string `long:"listen" description:"Exporter listen address" value-name:"[ADDR]:PORT" default:":9602"`
+	MetricsPath string `long:"metrics-path" description:"Metrics path where Prometheus scrapes metrics from" value-name:"PATH" default:"/metrics"`
+
+	LogLevel uint32 `long:"log-level" description:"0 ~ 6, see https://pkg.go.dev/github.com/sirupsen/logrus#Level" value-name:"N" default:"4"`
 }
 
 var (
