@@ -69,24 +69,26 @@ scrape_configs:
 
 ## Metrics Reference
 
+All metrics exposed by chain-state-exporter use the prefix `darwinia_state_`.
+
 New metrics proposals are always welcome, please feel free to submit an issue.
 
 ### Meta Metrics
 
-| Metric Name                  | Description                                                                          |
-| ---------------------------- | ------------------------------------------------------------------------------------ |
-| last_scrape_error            | Whether the last scrape of metrics resulted in an error (1 for error, 0 for success) |
-| last_scrape_duration_seconds | Time duration of last scrape in seconds                                              |
+| Metric Name                                 | Description                                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------------------------ |
+| darwinia_state_last_scrape_error            | Whether the last scrape of metrics resulted in an error (1 for error, 0 for success) |
+| darwinia_state_last_scrape_duration_seconds | Time duration of last scrape in seconds                                              |
 
 ### Storage Metrics
 
-| Metric Name           | Source (Chain Storage Name)             | Description                                                                                                                 |
-|-----------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| active_era_index      | staking.activeEra                       |                                                                                                                             |
-| session_index         | session.currentIndex                    |                                                                                                                             |
-| validators_total      | session.validators                      | Size of current validators set                                                                                              |
-| era_reward_points     | staking.erasRewardPoints                | Label `account_id` is the public key of corresponding validator,<br>label `address` is the SS58 address on Darwinia network |
-| pending_headers_total | ethereumRelay.pendingRelayHeaderParcels | Number of pending Ethereum header parcels                                                                                   |
+| Metric Name                          | Source (Chain Storage Name)             | Description                                                                                                                 |
+| ------------------------------------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| darwinia_state_active_era_index      | staking.activeEra                       |                                                                                                                             |
+| darwinia_state_session_index         | session.currentIndex                    |                                                                                                                             |
+| darwinia_state_validators_total      | session.validators                      | Size of current validators set                                                                                              |
+| darwinia_state_era_reward_points     | staking.erasRewardPoints                | Label `account_id` is the public key of corresponding validator,<br>label `address` is the SS58 address on Darwinia network |
+| darwinia_state_pending_headers_total | ethereumRelay.pendingRelayHeaderParcels | Number of pending Ethereum header parcels                                                                                   |
 
 ## License
 
