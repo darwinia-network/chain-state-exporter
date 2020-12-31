@@ -105,7 +105,7 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 	if storage, err := readStorage(conn, "staking", "activeEra"); err != nil {
 		return err
 	} else if err = json.Unmarshal([]byte(storage), &activeEra); err != nil {
-		return fmt.Errorf("storage session.activeEra invalid: %w", err)
+		return fmt.Errorf("storage staking.activeEra invalid: %w", err)
 	} else {
 		e.registerConstMetricCounter(ch, "active_era_index", float64(activeEra.Index))
 	}
