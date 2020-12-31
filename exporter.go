@@ -56,14 +56,14 @@ func NewExporter(endpoint string, customTypesFilePath string) (*Exporter, error)
 		txt  string
 		lbls []string
 	}{
-		"up":                      {txt: ""},
-		"scrape_duration_seconds": {txt: ""},
+		"last_scrape_error":            {txt: "Whether the last scrape of metrics resulted in an error (1 for error, 0 for success)"},
+		"last_scrape_duration_seconds": {txt: "Time duration of last scrape in seconds"},
 
-		"active_era_index":      {txt: ""},
-		"session_index":         {txt: ""},
-		"validators_total":      {txt: ""},
-		"era_reward_points":     {txt: "", lbls: []string{"account_id", "address"}},
-		"pending_headers_total": {txt: ""},
+		"active_era_index":      {txt: "From chain storage staking.activeEra"},
+		"session_index":         {txt: "From chain storage session.currentIndex"},
+		"validators_total":      {txt: "From chain storage session.validators"},
+		"era_reward_points":     {txt: "From chain storage staking.erasRewardPoints", lbls: []string{"account_id", "address"}},
+		"pending_headers_total": {txt: "From chain storage ethereumRelay.pendingRelayHeaderParcels"},
 	} {
 		e.metricDescriptions[k] = e.newMetricDesc(k, desc.txt, desc.lbls)
 	}
@@ -76,14 +76,14 @@ func NewExporter(endpoint string, customTypesFilePath string) (*Exporter, error)
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 
-	var up float64 = 1
+	var failed float64 = 0
 	if err := e.dialDarwiniaNode(ch); err != nil {
-		up = 0
+		failed = 1
 		logrus.Warnf("Scrape failed: %v", err)
 	}
 
-	e.registerConstMetricGauge(ch, "up", up)
-	e.registerConstMetricGauge(ch, "scrape_duration_seconds", time.Since(start).Seconds())
+	e.registerConstMetricGauge(ch, "last_scrape_error", failed)
+	e.registerConstMetricGauge(ch, "last_scrape_duration_seconds", time.Since(start).Seconds())
 }
 
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
