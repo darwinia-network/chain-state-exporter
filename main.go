@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -39,8 +38,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Printf("Chain State Exporter %v-%v (built %v)\n", buildVersion, buildCommit, buildDate)
 	logrus.SetLevel(logrus.Level(opts.LogLevel))
+	logrus.Infof("Chain State Exporter %v-%v (built %v)\n", buildVersion, buildCommit, buildDate)
 
 	var err error
 	exporter, err = NewExporter(opts.WebsocketEndpoint, opts.CustomTypesFilePath)
