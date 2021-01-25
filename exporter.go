@@ -192,6 +192,7 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 		return err
 	} else if storage == "null" {
 		e.registerConstMetricGauge(ch, "authorities_to_sign", 0)
+		e.registerConstMetricGauge(ch, "authorities_to_sign_votes", 0)
 	} else {
 		e.registerConstMetricGauge(ch, "authorities_to_sign", 1)
 		if err = json.Unmarshal([]byte(storage), &authoritiesToSign); err != nil {
