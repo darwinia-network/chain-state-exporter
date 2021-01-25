@@ -59,11 +59,16 @@ func NewExporter(endpoint string, customTypesFilePath string) (*Exporter, error)
 		"last_scrape_error":            {txt: "Whether the last scrape of metrics resulted in an error (1 for error, 0 for success)"},
 		"last_scrape_duration_seconds": {txt: "Time duration of last scrape in seconds"},
 
-		"active_era_index":      {txt: "From chain storage staking.activeEra"},
-		"session_index":         {txt: "From chain storage session.currentIndex"},
-		"validators_total":      {txt: "From chain storage session.validators"},
-		"era_reward_points":     {txt: "From chain storage staking.erasRewardPoints", lbls: []string{"account_id", "address"}},
-		"pending_headers_total": {txt: "From chain storage ethereumRelay.pendingRelayHeaderParcels"},
+		"active_era_index":  {txt: "From chain storage staking.activeEra"},
+		"session_index":     {txt: "From chain storage session.currentIndex"},
+		"validators_total":  {txt: "From chain storage session.validators"},
+		"era_reward_points": {txt: "From chain storage staking.erasRewardPoints", lbls: []string{"account_id", "address"}},
+
+		"pending_headers_total":        {txt: "From chain storage ethereumRelay.pendingRelayHeaderParcels"},
+		"mmr_to_sign_total":            {txt: "From chain storage ethereumRelayAuthorities.mMRRootsToSignKeys"},
+		"authorities_to_sign":          {txt: "From chain storage ethereumRelayAuthorities.authoritiesToSign"},
+		"authorities_to_sign_votes":    {txt: "From chain storage ethereumRelayAuthorities.authoritiesToSign"},
+		"authorities_to_sign_deadline": {txt: "From chain storage ethereumRelayAuthorities.nextAuthorities"},
 	} {
 		e.metricDescriptions[k] = e.newMetricDesc(k, desc.txt, desc.lbls)
 	}
@@ -99,6 +104,9 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 	}
 	defer conn.Close()
 
+	//
+	// Substrate common storage
+	//
 	var activeEra struct {
 		Index uint32 `json:"index"`
 	}
@@ -152,6 +160,9 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 		}
 	}
 
+	//
+	// Darwinia specific storage
+	//
 	if storage, err := readStorage(conn, "ethereumRelay", "pendingRelayHeaderParcels"); err != nil {
 		return err
 	} else if storage == "null" {
@@ -162,6 +173,46 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 			return fmt.Errorf("storage ethereumRelay.pendingRelayHeaderParcels invalid: %w", err)
 		}
 		e.registerConstMetricGauge(ch, "pending_headers_total", float64(len(pendingHeaders)))
+	}
+
+	var mmrToSignKeys []uint64
+	if storage, err := readStorage(conn, "ethereumRelayAuthorities", "mMRRootsToSignKeys"); err != nil {
+		return err
+	} else if err = json.Unmarshal([]byte(storage), &mmrToSignKeys); err != nil {
+		return fmt.Errorf("storage ethereumRelayAuthorities.mMRRootsToSignKeys invalid: %w", err)
+	} else {
+		e.registerConstMetricGauge(ch, "mmr_to_sign_total", float64(len(mmrToSignKeys)))
+	}
+
+	var authoritiesToSign struct {
+		RelayAuthorityMessage string        `json:"col1"`
+		Votes                 []interface{} `json:"col2"`
+	}
+	if storage, err := readStorage(conn, "ethereumRelayAuthorities", "authoritiesToSign"); err != nil {
+		return err
+	} else if storage == "null" {
+		e.registerConstMetricGauge(ch, "authorities_to_sign", 0)
+	} else {
+		e.registerConstMetricGauge(ch, "authorities_to_sign", 1)
+		if err = json.Unmarshal([]byte(storage), &authoritiesToSign); err != nil {
+			return fmt.Errorf("storage ethereumRelayAuthorities.authoritiesToSign invalid: %w", err)
+		} else {
+			e.registerConstMetricGauge(ch, "authorities_to_sign_votes", float64(len(authoritiesToSign.Votes)))
+		}
+	}
+
+	var scheduledAuthoritiesChange struct {
+		NextAuthorities []interface{} `json:"next_authorities"`
+		Deadline        uint64        `json:"deadline"`
+	}
+	if storage, err := readStorage(conn, "ethereumRelayAuthorities", "nextAuthorities"); err != nil {
+		return err
+	} else if storage == "null" {
+		e.registerConstMetricGauge(ch, "authorities_to_sign_deadline", 0)
+	} else if err = json.Unmarshal([]byte(storage), &scheduledAuthoritiesChange); err != nil {
+		return fmt.Errorf("storage ethereumRelayAuthorities.nextAuthorities invalid: %w", err)
+	} else {
+		e.registerConstMetricGauge(ch, "authorities_to_sign_deadline", float64(scheduledAuthoritiesChange.Deadline))
 	}
 
 	return nil

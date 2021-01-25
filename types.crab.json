@@ -322,6 +322,19 @@
       ]
     ]
   },
+  "Unbonding": {
+    "type": "struct",
+    "type_mapping": [
+      [
+        "amount",
+        "Balance"
+      ],
+      [
+        "moment",
+        "BlockNumber"
+      ]
+    ]
+  },
   "AccountData": {
     "type": "struct",
     "type_mapping": [
@@ -805,7 +818,8 @@
   "RawHeaderThing": "Vec<u8>",
   "EthereumNetworkType": "EthNetworkType",
   "EthashProof": "DoubleNodeWithMerkleProof",
-  "MMRProof": {
+  "MMRProof": "Vec<H256>",
+  "MMRProof#11-?": {
     "type": "struct",
     "type_mapping": [
       [
@@ -819,19 +833,6 @@
       [
         "proof",
         "Vec<H256>"
-      ]
-    ]
-  },
-  "ConfirmedEthereumHeaderInfo": {
-    "type": "struct",
-    "type_mapping": [
-      [
-        "header",
-        "EthereumHeader"
-      ],
-      [
-        "mmr_root",
-        "H256"
       ]
     ]
   },
@@ -923,7 +924,7 @@
       ]
     ]
   },
-  "Unbonding": {
+  "Unbonding#5-?": {
     "type": "struct",
     "type_mapping": [
       [
@@ -936,8 +937,21 @@
       ]
     ]
   },
+  "RelayVotingState": {
+    "type": "struct",
+    "type_mapping": [
+      [
+        "ayes",
+        "Vec<AccountId>"
+      ],
+      [
+        "nays",
+        "Vec<AccountId>"
+      ]
+    ]
+  },
   "TcHeaderMMR": "Vec<u8>",
-  "CompactAssignments": "CompactAssignmentsLatest",
+  "CompactAssignments#17-?": "CompactAssignmentsLatest",
   "ProxyType": {
     "type": "enum",
     "value_list": [
@@ -979,7 +993,7 @@
     ]
   },
   "RewardDestination": "RewardDestinationLatest",
-  "RefCount": "u32",
+  "RefCount#21-?": "u32",
   "EthereumRelayHeaderParcel": {
     "type": "struct",
     "type_mapping": [
@@ -1051,17 +1065,67 @@
       ]
     ]
   },
-  "RelayVotingState": {
-    "type": "struct",
+  "RewardDestination#0-16": {
+    "type": "enum",
     "type_mapping": [
       [
-        "ayes",
-        "Vec<AccountId>"
+        "Staked",
+        "Staked"
       ],
       [
-        "nays",
-        "Vec<AccountId>"
+        "Stash",
+        "null"
+      ],
+      [
+        "Controller",
+        "null"
       ]
     ]
-  }
+  },
+  "Signer": "EthereumAddress",
+  "RelayAuthorityT": {
+    "type_mapping": [
+      [
+        "accountId",
+        "AccountId"
+      ],
+      [
+        "signer",
+        "Signer"
+      ],
+      [
+        "stake",
+        "Balance"
+      ],
+      [
+        "term",
+        "BlockNumber"
+      ]
+    ],
+    "type": "struct"
+  },
+  "MMRRoot": "Hash",
+  "EcdsaAddress": "EthereumAddress",
+  "EcdsaSignature": "[u8; 65]",
+  "EcdsaMessage": "H256",
+  "RelayAuthoritySigner": "EcdsaAddress",
+  "RelayAuthorityMessage": "EcdsaMessage",
+  "RelayAuthoritySignature": "EcdsaSignature",
+  "RelayAuthoritySignature<T, I>": "EcdsaSignature",
+  "Term": "u32",
+  "OpCode": "[u8; 4]",
+  "ScheduledAuthoritiesChange": {
+    "type_mapping": [
+      [
+        "next_authorities",
+        "Vec<RelayAuthorityT>"
+      ],
+      [
+        "deadline",
+        "BlockNumber"
+      ]
+    ],
+    "type": "struct"
+  },
+  "ScheduledAuthoritiesChangeT": "ScheduledAuthoritiesChange"
 }
