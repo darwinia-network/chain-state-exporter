@@ -65,7 +65,7 @@ func NewExporter(endpoint string, customTypesFilePath string) (*Exporter, error)
 		"era_reward_points": {txt: "From chain storage staking.erasRewardPoints", lbls: []string{"account_id", "address"}},
 
 		"pending_headers_total":        {txt: "From chain storage ethereumRelay.pendingRelayHeaderParcels"},
-		"mmr_to_sign_total":            {txt: "From chain storage ethereumRelayAuthorities.mMRRootsToSignKeys"},
+		"mmr_roots_to_sign_total":      {txt: "From chain storage ethereumRelayAuthorities.mMRRootsToSignKeys"},
 		"authorities_to_sign":          {txt: "From chain storage ethereumRelayAuthorities.authoritiesToSign"},
 		"authorities_to_sign_votes":    {txt: "From chain storage ethereumRelayAuthorities.authoritiesToSign"},
 		"authorities_to_sign_deadline": {txt: "From chain storage ethereumRelayAuthorities.nextAuthorities"},
@@ -175,13 +175,13 @@ func (e *Exporter) dialDarwiniaNode(ch chan<- prometheus.Metric) error {
 		e.registerConstMetricGauge(ch, "pending_headers_total", float64(len(pendingHeaders)))
 	}
 
-	var mmrToSignKeys []uint64
+	var mmrRootsToSignKeys []uint64
 	if storage, err := readStorage(conn, "ethereumRelayAuthorities", "mMRRootsToSignKeys"); err != nil {
 		return err
-	} else if err = json.Unmarshal([]byte(storage), &mmrToSignKeys); err != nil {
+	} else if err = json.Unmarshal([]byte(storage), &mmrRootsToSignKeys); err != nil {
 		return fmt.Errorf("storage ethereumRelayAuthorities.mMRRootsToSignKeys invalid: %w", err)
 	} else {
-		e.registerConstMetricGauge(ch, "mmr_to_sign_total", float64(len(mmrToSignKeys)))
+		e.registerConstMetricGauge(ch, "mmr_roots_to_sign_total", float64(len(mmrRootsToSignKeys)))
 	}
 
 	var authoritiesToSign struct {
