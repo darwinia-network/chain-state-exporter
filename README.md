@@ -25,14 +25,14 @@ docker pull quay.io/darwinia-network/chain-state-exporter:v0.1.0
     wget -O types.json https://raw.githubusercontent.com/darwinia-network/chain-state-exporter/master/types.json
     ```
 
-2. Run the exporter with `types.json` and the official Darwinia RPC node (`wss://cc1.darwinia.network`):
+2. Run the exporter with `types.json` and the official Darwinia RPC node (`wss://rpc.darwinia.network`):
 
     ```bash
     docker run -d \
         -p 9602:9602 \
         -v $PWD/types.json:/types.json \
         quay.io/darwinia-network/chain-state-exporter:v0.1.0 \
-            --ws-endpoint wss://cc1.darwinia.network
+            --ws-endpoint wss://rpc.darwinia.network
     ```
 
     `9602` is the default port of chain-state-exporter. Don't forget to check out the latest release instead of using the version `v0.1.0` which might be stale already.
