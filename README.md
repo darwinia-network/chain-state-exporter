@@ -5,7 +5,7 @@
 
 Chain State Exporter collects the state of Darwinia Network and exposes them in Prometheus compatible metrics formats.
 
-Currently, it works with Darwinia CC1 and Darwinia Crab.
+Currently, it works with Darwinia Mainnet and Darwinia Crab.
 
 ## Releases
 
