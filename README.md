@@ -82,17 +82,19 @@ New metrics proposals are always welcome, please feel free to submit an issue.
 
 ### Storage Metrics
 
-| Metric Name                              | Source (Chain Storage Name)                 | Description                                                                                                                 |
-| ---------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| darwinia_state_active_era_index          | staking.activeEra                           |                                                                                                                             |
-| darwinia_state_session_index             | session.currentIndex                        |                                                                                                                             |
-| darwinia_state_validators_total          | session.validators                          | Size of current validators set                                                                                              |
-| darwinia_state_era_reward_points         | staking.erasRewardPoints                    | Label `account_id` is the public key of corresponding validator,<br>label `address` is the SS58 address on Darwinia network |
-| darwinia_state_pending_headers_total     | ethereumRelay.pendingRelayHeaderParcels     | Number of pending Ethereum header parcels                                                                                   |
-| darwinia_state_mmr_roots_to_sign_total   | ethereumRelayAuthorities.mMRRootsToSignKeys | Number of MMR roots that need to be signed                                                                                  |
-| darwinia_state_authorities_to_sign       | ethereumRelayAuthorities.authoritiesToSign  | Whether there is a new authority set that need to be signed, can be either `1` or `0`                                       |
-| darwinia_state_authorities_to_sign_votes | ethereumRelayAuthorities.authoritiesToSign  | Number of signed votes of ongoing authorities change request, `0` if darwinia_state_authorities_to_sign == 0                |
-| authorities_to_sign_deadline             | ethereumRelayAuthorities.nextAuthorities    | Block number deadline of ongoing authorities change request, `0` if darwinia_state_authorities_to_sign == 0                 |
+| Metric Name                                         | Source (Chain Storage Name)                 | Description                                                                                                                 |
+| --------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| darwinia_state_active_era_index                     | staking.activeEra                           |                                                                                                                             |
+| darwinia_state_session_index                        | session.currentIndex                        |                                                                                                                             |
+| darwinia_state_validators_total                     | session.validators                          | Size of current validators set                                                                                              |
+| darwinia_state_era_reward_points                    | staking.erasRewardPoints                    | Label `account_id` is the public key of corresponding validator,<br>label `address` is the SS58 address on Darwinia network |
+| darwinia_state_pending_headers_total                | ethereumRelay.pendingRelayHeaderParcels     | Number of pending Ethereum header parcels                                                                                   |
+| darwinia_state_mmr_roots_to_sign_total              | ethereumRelayAuthorities.mMRRootsToSignKeys | Number of MMR roots that need to be signed                                                                                  |
+| darwinia_state_authorities_to_sign                  | ethereumRelayAuthorities.authoritiesToSign  | Whether there is a new authority set that need to be signed, can be either `1` or `0`                                       |
+| darwinia_state_authorities_to_sign_votes            | ethereumRelayAuthorities.authoritiesToSign  | Number of signed votes of ongoing authorities change request, `0` if darwinia_state_authorities_to_sign == 0                |
+| darwinia_state_authorities_to_sign_deadline         | ethereumRelayAuthorities.nextAuthorities    | Block number deadline of ongoing authorities change request, `0` if darwinia_state_authorities_to_sign == 0                 |
+| darwinia_state_best_confirmed_ethereum_block_number | ethereumRelay.bestConfirmedBlockNumber      |                                                                                                                             |
+| darwinia_state_pending_header_ethereum_block_number | ethereumRelay.pendingRelayHeaderParcels     | Ethereum block number of every pending relay header parcel,<br>label `block_number` is the Darwinia block number            |
 
 ## License
 
