@@ -1,0 +1,50 @@
+groups:
+  - name: darwinia-state.rules
+    rules:
+      - alert: ChainStateScrapeFailed
+        expr: darwinia_state_last_scrape_error != 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          message: Chain state exporter has failed to scrape metrics for 5 minutes.
+
+      - alert: NumberOfPendingHeadersHigh
+        expr: darwinia_state_pending_headers_total >= 1
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          message: One or more pending header parcels are waiting for approval for 10 minutes.
+
+      - alert: MMRToSignWaiting
+        expr: darwinia_state_mmr_to_sign_total >= 1
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          message: One or more MMR roots are waiting to be signed for 10 minutes.
+
+      - alert: AuthoritiesChangeWaiting
+        expr: darwinia_state_authorities_to_sign != 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          message: An authorities change request is waiting to be signed for 10 minutes.
+
+      - alert: AuthoritiesChangeDeadlineReached
+        # TODO: Consider removing the authorities_to_sign_deadline metrics when darwinia_state_authorities_to_sign == 0
+        expr: darwinia_state_authorities_to_sign_deadline != 0 and min(darwinia_state_authorities_to_sign_deadline) < max(darwinia_block_height{job=~"darwinia-.+",status="finalized"})
+        labels:
+          severity: warning
+        annotations:
+          message: An authorities change request reached the deadline and has not been signed.
+
+      # - alert: ValidatorOffline
+      #   expr: rate(max by (account_id, address) (darwinia_state_era_reward_points)[180m:5m]) == 0
+      #   for: 10m
+      #   labels:
+      #     severity: info
+      #   annotations:
+      #     message: The era points of validator {{ $labels.address }} has not been increasing.
